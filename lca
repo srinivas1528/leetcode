@@ -1,0 +1,81 @@
+236. Lowest Common Ancestor of a Binary Tree
+
+Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+
+According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”
+
+ 
+
+Example 1:
+
+
+Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+Output: 3
+Explanation: The LCA of nodes 5 and 1 is 3.
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    
+    TreeNode result = null;
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        
+        // algo: intitutive way
+        // use dfs approach
+        // during traversal; if we hit first search node
+        // keep track of it (will use mid and return true)
+        // and traverse down left or right subtrees
+        // if we find the next search node
+        // then we can say that; the first node way we hit is the lca
+        // else if found in another branch; as we backtrack
+        // and the lca should be from two different recursive calls.
+
+        dfsTraverse(root, p , q);
+        
+        return result;
+    }
+    // note: dfs Traversal will be full traversal even though we find the lca
+    public boolean dfsTraverse(TreeNode root, TreeNode p, TreeNode q) {
+        
+        // base
+        if(root == null) {
+            return false;
+        }
+        
+        
+        int left = dfsTraverse(root.left, p, q) ? 1: 0;
+        int right = dfsTraverse(root.right, p , q) ? 1: 0;
+        
+        
+        // if we hit search item; keep track with mid
+        // will be used in returning boolean value if 
+        // serach found by node itself and to return the bool
+        // to parents too.
+        // also gives the lca; if mid is lca itself
+        int mid = 0;
+        if(root == p || root == q) {
+           mid = 1;
+        }
+        
+        
+        // this is a lca
+        // either mid is an lca  and found another search node in left or rgiht
+        // or purely 2 recursive 2 calls (backtracking is used here)
+        if(mid + right + left >= 2) {
+            result = root;
+        }
+        
+        // will return true if we find atleast one search node 
+        // from either left or right call or mid itself
+        return (mid == 1 || left == 1 || right == 1) ? true: false;
+        
+    }
+}
+
+Credits: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
