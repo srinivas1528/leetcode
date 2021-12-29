@@ -1,0 +1,162 @@
+/*
+128. Longest Consecutive Sequence
+Medium
+
+7757
+
+352
+
+Add to List
+
+Share
+Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence.
+
+You must write an algorithm that runs in O(n) time.
+
+ 
+
+Example 1:
+
+Input: nums = [100,4,200,1,3,2]
+Output: 4
+Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4.
+Example 2:
+
+Input: nums = [0,3,7,2,5,8,4,6,0,1]
+Output: 9
+ 
+
+Constraints:
+
+0 <= nums.length <= 105
+-109 <= nums[i] <= 109
+
+*/
+
+//3 solutions provided:
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        
+
+        int maxStreak = 0;
+        
+        
+        // use map to store both leftbounds and righbounds for a num
+        Map<Integer, ArrayList<Integer>> map = new HashMap<>();
+        
+        
+        // algo: Use left bounds and right bounds to store the extremeties so far in a dict
+        // everytime if a number builds up the seequnce either it's left or right bounds is increased
+        // if a middle number that gets added to a sequence; then both it's left and right bound sequence gets updated
+        // iterate num
+        for(int num:nums) {
+             
+            // init left bounds and lefts bounds to num itself
+            int leftbounds  = num;
+            int rightbounds = num;
+
+            
+            // already left bounds present in sequence; so update the bounds
+            if(map.containsKey(num- 1)) {
+                leftbounds = map.get(num-1).get(0); 
+            }
+            
+            // similarly for right bounds
+            if(map.containsKey(num+1)) {
+                rightbounds = map.get(num+1).get(1);
+            }
+            
+            // update the dict values for num itslef
+            ArrayList<Integer> list= new ArrayList<>();
+            list.add(leftbounds);
+            list.add(rightbounds);
+            map.put(num, list);
+            
+            
+            // update the dict values for leftbunds seen or present
+            map.put(leftbounds, list);
+
+            // update the dict values for rightbounds seen or present
+            map.put(rightbounds, list);
+            
+            maxStreak = Math.max((rightbounds - leftbounds +1), maxStreak);
+                       
+        }
+             
+        return maxStreak;
+    }
+}
+
+// class Solution {
+//     public int longestConsecutive(int[] nums) {
+        
+
+//         int maxStreak = 0;
+        
+        
+//         // use hashset
+//         Set<Integer> set = new HashSet<Integer>();
+        
+//         for(int num:nums){
+//             set.add(num);
+//         }
+        
+//         // algo: Hashset and intilligent sequence building
+//         // iterate num
+//         for(int num: nums) {
+//             if(!set.contains(num-1)) { // intelligent sequence buillding; don't build sequence  if already built
+                
+//                 int currNum = num+1;
+//                 int sequence = 1;
+//                 while(set.contains(currNum)) {  // although while is used if you look at contrtuctively it's repeated only once for one larger consecutive set
+//                     currNum++;
+//                     sequence++;
+//                 }
+//                 maxStreak = Math.max(sequence, maxStreak);
+//             }
+//         }
+     
+//         return maxStreak;
+//     }
+// }
+
+
+// class Solution {
+//     public int longestConsecutive(int[] nums) {
+        
+
+//         int maxStreak = 0;
+        
+        
+//         // brute force
+//         for(int num: nums) {
+//             int currNum = num;
+//             int sequence = 0;
+            
+//             while(arrayContains(nums,  currNum)) { // blindly building up sequence
+//                 currNum++;
+//                 sequence++;
+                
+//             }
+//             maxStreak = Math.max(sequence, maxStreak);
+            
+//         }
+        
+//         return maxStreak;   
+        
+//     }
+    
+    
+//     public boolean arrayContains(int[] nums, int currNum) {
+        
+        
+//         for(int num: nums){
+//             if(currNum == num) {
+//                 return true;
+//             }
+//         }
+//         return false;
+//     }
+// }
+
+//Credits: https://leetcode.com/problems/longest-consecutive-sequence/
