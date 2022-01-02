@@ -1,0 +1,113 @@
+/*
+You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
+
+You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+
+ 
+
+Example 1:
+
+
+Input: l1 = [2,4,3], l2 = [5,6,4]
+Output: [7,0,8]
+Explanation: 342 + 465 = 807.
+
+Example 2:
+
+Input: l1 = [0], l2 = [0]
+Output: [0]
+Example 3:
+
+Input: l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
+Output: [8,9,9,9,0,0,0,1]
+ 
+
+Constraints:
+
+The number of nodes in each linked list is in the range [1, 100].
+0 <= Node.val <= 9
+It is guaranteed that the list represents a number that does not have leading zeros.
+
+*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        
+        // intution: basic aithematic operations, as list nodes move in forward direction; the  numbers in reverse order 
+        // are actually the forward direction on how we add the sum of two number in a piece of paper. 
+        // operations: start adding the values of both linked lists from their head until both of them are null; including carry if any
+        // and store the sum value in a greater length input list 
+        
+        ListNode head1 = l1;
+        ListNode new_head1 = head1;
+        int length1  = 0;
+        
+        while(head1 != null) {
+            head1 = head1.next;
+            length1++;
+        }
+        
+        ListNode head2 = l2;
+        ListNode new_head2 = head2;
+        int length2  = 0;
+        
+        
+        while(head2 != null) {
+            head2 = head2.next;
+            length2++;
+        }
+
+        // length is computed; to reuse the linkedlist of largest elements as result.
+        // always the new_head1 is the one with max elements;
+        if(length1 < length2) {
+            ListNode tmp = new_head1; 
+            new_head1 = new_head2;
+            new_head2 = tmp;
+        }
+        
+        ListNode res = new_head1;     // always the result is the one with max elements;
+        int sum = 0;
+        int carry = 0;
+        
+        while (new_head1 != null || new_head2 !=null) {
+            
+            int a = (new_head1 != null) ? new_head1.val : 0;
+            int b = (new_head2 != null) ? new_head2.val : 0;
+            sum = (a + b + carry) % 10;
+            carry = (a + b + carry) / 10; 
+            new_head1.val = sum;  // updating the highest node value itself; will be used as a result.
+            
+            if(new_head1  != null) {
+                new_head1 = new_head1.next;
+            }
+            if(new_head2  != null) {
+                new_head2 = new_head2.next;
+            }
+        }
+        
+        // update result; if carry value is still 1
+        if(carry == 1) {
+            ListNode one_off = new ListNode(1, null);
+            ListNode cur = res;
+            while(cur.next != null) {
+                cur = cur.next;
+            }
+            cur.next = one_off; // joing the last of result to one_off head.
+        }
+        
+        return res;
+        
+    }
+}
+
+//  Source: https://leetcode.com/problems/add-two-numbers/
