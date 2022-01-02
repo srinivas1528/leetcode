@@ -1,0 +1,84 @@
+/*
+Given the head of a linked list, rotate the list to the right by k places.
+
+ 
+
+Example 1:
+
+
+Input: head = [1,2,3,4,5], k = 2
+Output: [4,5,1,2,3]
+Example 2:
+
+
+Input: head = [0,1,2], k = 4
+Output: [2,0,1]
+ 
+
+Constraints:
+
+The number of nodes in the list is in the range [0, 500].
+-100 <= Node.val <= 100
+0 <= k <= 2 * 109
+    
+*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode rotateRight(ListNode head, int k) {
+        
+        // intution: basically the k elements at the end will be moved to start of linked list
+        // we will use 2 pointers to track the last k elements both start and end
+        // note: rotation like an array by one by one is a tedious way of doing for linked list
+        
+        // edge case
+        if(head == null) {
+            return null;
+        }
+        
+        
+        int length = 0;
+        ListNode current = head;
+        
+        // compute length
+        while(current != null) {
+            current = current.next;
+            length++;
+        }
+        
+        // to avoid null pointer exception; also limit the number of rotations 
+        k =  k % length;
+        
+        // use fast pointer to compute the end of last k elements
+        ListNode fast  = head;
+        for(int i = 0; i < k; i++) {
+            fast = fast.next;
+        }
+        
+        // use slow pointer to compute the start of last k elemetns
+        ListNode slow = head;
+        while(fast.next != null) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        
+        
+        // chain or join the last k elements as the begining to the linked list
+        fast.next = head;
+        head = slow.next;
+        slow.next = null;
+        
+        return head;
+    }
+}
+
+
