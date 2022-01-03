@@ -1,0 +1,105 @@
+/*
+Given a characters array tasks, representing the tasks a CPU needs to do, where each letter represents a different task. Tasks could be done in any order. Each task is done in one unit of time. For each unit of time, the CPU could complete either one task or just be idle.
+
+However, there is a non-negative integer n that represents the cooldown period between two same tasks (the same letter in the array), that is that there must be at least n units of time between any two same tasks.
+
+Return the least number of units of times that the CPU will take to finish all the given tasks.
+
+ 
+Example 1:
+
+Input: tasks = ["A","A","A","B","B","B"], n = 2
+Output: 8
+Explanation: 
+A -> B -> idle -> A -> B -> idle -> A -> B
+There is at least 2 units of time between any two same tasks.
+Example 2:
+
+Input: tasks = ["A","A","A","B","B","B"], n = 0
+Output: 6
+Explanation: On this case any permutation of size 6 would work since n = 0.
+["A","A","A","B","B","B"]
+["A","B","A","B","A","B"]
+["B","B","B","A","A","A"]
+...
+And so on.
+Example 3:
+
+Input: tasks = ["A","A","A","A","A","A","B","C","D","E","F","G"], n = 2
+Output: 16
+Explanation: 
+One possible solution is
+A -> B -> C -> A -> D -> E -> A -> F -> G -> A -> idle -> idle -> A -> idle -> idle -> A
+ 
+
+Constraints:
+
+1 <= task.length <= 104
+tasks[i] is upper-case English letter.
+The integer n is in the range [0, 100].
+*/
+
+
+class Solution {
+    public int leastInterval(char[] tasks, int n) {
+        
+        // solution: pretty much based on intution on how we would schedule the tasks normally on paper as a MAX heap implentation
+        
+        
+        // use a dict to initially story the task and count of each task
+        
+        // later add the count values along with task to max-heap queue . this gives better retrieving of tasks --> this is not needed
+        // just the priority quest with task count is sufficient,
+        
+        // outer loop until the max-heap all counts are zero
+        // use an innner while loop to grab n tasks from the max-heap and decrement the counts of max heap.
+        // implementation of the max heap queue may vary here:
+        // as we don't have direct way to  decrement the counts; we pop the element the from maxheap
+        // and store the counts to list(if counts > 0); and later add back the list to hep after the end of while loop.
+        
+        
+        // time complexity: O(result) --> As we only compute till the time counter is incremented.
+        // space: O(tasks_count)
+        Map<Character, Integer> task_counter = new HashMap<>();
+        for(Character task: tasks) {
+            task_counter.put(task, task_counter.getOrDefault(task,0) + 1);    
+        }
+        
+        
+        // only add the frequency of all tasks 
+        // use revereseOrder to account for masx-heap implementation
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+
+        pq.addAll(task_counter.values());
+        
+        
+        int time = 0;
+        while(pq.size() > 0) {
+            List<Integer> add_back = new ArrayList<>();
+            
+            // loop for grabbing n tasks from  pq or for idle itme only
+            for(int i= 0; i <= n; i++) {
+                
+                // for grabbing n tasks from  pq 
+                if(pq.size() > 0) {
+                    int count = pq.poll(); // retreives max and removes an element from pq.
+                    count--;
+                    if(count > 0) { // needs add_back
+                        add_back.add(count);
+                    }  
+                }
+                
+                time += 1; // accounts for idle time and real task too.
+                if(pq.size() == 0 && add_back.size() == 0) {  // this accounts when the last run of tasks is done and no more tasks to ensure no idle runs happen when no tasks to schecule.
+                    break;
+                }  
+
+            }   
+            pq.addAll(add_back);  // re-arrange the max-heap proeprty by adding the add_back counts to pq.
+
+        }
+        return time;
+    }
+}
+
+// https://leetcode.com/problems/task-scheduler/
