@@ -1,0 +1,39 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+// Time complexity: O(h) as tree can be unbalanced
+// Space complexity: O(1) as no extra space is used.
+class Solution {
+    public TreeNode searchBST(TreeNode root, int val) {
+        
+        if(root == null) {
+            return null;
+        }
+        // if  search found return node;
+        // generally BST based on binary decisions
+        // recurse either left or right; both not both like a Binary tree.
+        // no backtracking is required in BST mostly
+        // return is clean as we stop at the node we want;
+        if (root.val == val) {
+            System.out.println(root.val);
+            return root;
+        } else if(root.val > val) { // left call; good time to update min
+             return searchBST(root.left, val);
+        } else { // right call; good time to update min
+            return searchBST(root.right, val);
+        }
+    }
+}
