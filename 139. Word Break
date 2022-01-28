@@ -1,0 +1,99 @@
+Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+
+Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+ 
+
+Example 1:
+
+Input: s = "leetcode", wordDict = ["leet","code"]
+Output: true
+Explanation: Return true because "leetcode" can be segmented as "leet code".
+Example 2:
+
+Input: s = "applepenapple", wordDict = ["apple","pen"]
+Output: true
+Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+Note that you are allowed to reuse a dictionary word.
+Example 3:
+
+Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+Output: false
+ 
+
+Constraints:
+
+1 <= s.length <= 300
+1 <= wordDict.length <= 1000
+1 <= wordDict[i].length <= 20
+s and wordDict[i] consist of only lowercase English letters.
+All the strings of wordDict are unique.
+
+
+
+
+      // Whiteboarding (DFS)          
+        0 1 2 3 4 5 6 7 8 9 10  
+         "c a t s a n d d o g"     
+             
+             
+             0
+         3       4      10 
+        cat     cats    null
+         
+       7         7 --> visited
+      sand      and
+             
+    
+      10         10
+      dog        dog
+    
+             
+    //  Algo: DFS Approach
+    //  Current Node 0; Add the queue starts with node 0
+    // start from 0th and 1st index as end; and increment end till end of n
+    // till 0-3 --> substring found in dict; push the end index to the queue; and continue further till 0-n
+    // Now process the current element as front of queue i.e. Node 3 (start 3 as fixed, iterate till end of n) and repeat
+    // Base: if node 10 is pushed in queue; return true
+    // else return false if queue is empty and not reach end node which is  11
+   // Time Complexity - O(n^3)
+   // Space Complexity - O(n)
+
+    public boolean wordBreak(String s, List<String> wordDict) {
+
+
+        Queue<Integer> queue = new LinkedList<>(); // only stores node starting index
+             
+        Set<String> WordDictSet  =  new HashSet<>(wordDict);
+        
+        boolean[] nodeVisited = new boolean[s.length() + 1];
+        
+        queue.add(0);
+             
+        while(!queue.isEmpty()) {
+            
+            // base: where we have matched target with the combinations in dict 
+            if(queue.contains(s.length())) {return true;}
+            
+            
+            // don't visit already visited nodes
+            if(nodeVisited[queue.peek()]) {
+                queue.poll();
+                continue;
+            }
+            
+            // process the queue.
+            int start = queue.poll();
+            
+            // add to visited
+            nodeVisited[start] = true;
+            
+            for(int end = start+1;  end <= s.length(); end++) {
+                
+                if(wordDict.contains(s.substring(start,end))) {
+                    queue.add(end);
+                }
+            }
+        }
+     return false;
+     }
