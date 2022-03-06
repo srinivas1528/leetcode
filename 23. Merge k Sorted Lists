@@ -1,0 +1,99 @@
+/*
+You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
+
+Merge all the linked-lists into one sorted linked-list and return it.
+
+ 
+
+Example 1:
+
+Input: lists = [[1,4,5],[1,3,4],[2,6]]
+Output: [1,1,2,3,4,4,5,6]
+Explanation: The linked-lists are:
+[
+  1->4->5,
+  1->3->4,
+  2->6
+]
+merging them into one sorted list:
+1->1->2->3->4->4->5->6
+Example 2:
+
+Input: lists = []
+Output: []
+Example 3:
+
+Input: lists = [[]]
+Output: []
+ 
+
+Constraints:
+
+k == lists.length
+0 <= k <= 104
+0 <= lists[i].length <= 500
+-104 <= lists[i][j] <= 104
+lists[i] is sorted in ascending order.
+The sum of lists[i].length will not exceed 104.
+*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        
+        // Note: Algo is simple here; just usage of min heap and moving thee refreneces carefully after each processing 
+        // in the while  is the key here.
+        
+        // Lightbulb:  Also in Heap, we only have a max of k Listnodes refereneces only and not the entire LinkedList itself.
+        // This makes a time anlaysis of O(Nlogk); where N is the total number of nodes and K is for add_back a node to the priority queue.
+        // Space: O(N) for storing result ListNode.
+        
+        // Algo: Use min-heap to store the k listnode references
+        // such that we can use it as a compartor and store the lower value to result
+        // Also,  update the heap with next node retreived reference after each processing.
+        
+        PriorityQueue<ListNode> pq=new PriorityQueue<>((a,b)->a.val-b.val);
+        
+        
+        // load the heap initially with ListNode referrences for all the k sorted input lists
+        for(int i = 0; i < lists.length; i++) {
+            if(lists[i] == null) {
+                continue;
+            }
+            pq.add(lists[i]);
+        }
+        
+        ListNode dummy = new ListNode(0);
+        
+        ListNode head = dummy;
+        
+        // Until the heap is empty, poll the lower value node from heap
+        // add back the retrieved next element reference back to the heap;  if node is not null. 
+        while(pq.size() != 0) {
+            
+            ListNode tmp = pq.poll();
+            dummy.next = tmp;
+            dummy = dummy.next;
+            tmp = tmp.next;
+            
+            // add back the remaining linked list of the least value node to heap
+            if(tmp != null) {
+                pq.add(tmp);
+            }          
+        }
+        
+        return head.next;
+        
+    }
+}
+
+// Source: https://leetcode.com/problems/merge-k-sorted-lists/
