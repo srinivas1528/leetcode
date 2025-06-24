@@ -1,2 +1,2 @@
 # leetcode
-repo name is quite obvious :)
+Solved algorithm and DSA questions in leetcode.
