@@ -1,0 +1,25 @@
+// create a WeakMap to store visit counts.
+const visitsCount = new WeakMap();
+
+// Create visitor objects.
+const John = {name:"John", age:40};
+const Paul = {name: "Paul", age: 41};
+const Ringo = {name: "Ringo", age: 42};
+const George = {name: "George", age: 43};
+
+// track visits
+track(John);
+track(Ringo);
+track(Paul);
+track(George);
+track(George);
+
+
+function track(visitor) {
+  let count = visitsCount.get(visitor) || 0;
+  count++;
+  visitsCount.set(visitor, count);
+  console.log(visitor.name + ", age" + visitor.age + " , has visited " + count + " time(s).")
+}
+
+ 
